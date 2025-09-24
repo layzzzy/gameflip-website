@@ -981,7 +981,7 @@ function toggleHeroVideo() {
     }
 }
 
-// 打开B站视频模态框
+// 打开本地视频模态框
 function openVideoModal() {
     const videoModal = document.getElementById('videoModal');
     const modalVideo = document.getElementById('modalVideo');
@@ -990,15 +990,16 @@ function openVideoModal() {
         videoModal.classList.add('show');
         document.body.style.overflow = 'hidden'; // 防止背景滚动
         
-        // 重新设置iframe的src来开始播放（确保每次打开都是新的播放会话）
+        // 播放本地视频
         if (modalVideo) {
-            modalVideo.src = 'https://player.bilibili.com/player.html?aid=115257729094782&bvid=BV1dhJXz6EBJ&cid=32594330927&p=1&high_quality=1&danmaku=1&autoplay=1&as_wide=1';
-            
-            // 添加allow属性以允许自动播放有声音
-            modalVideo.setAttribute('allow', 'autoplay; fullscreen; encrypted-media');
+            modalVideo.currentTime = 0; // 重置到开始位置
+            modalVideo.play().catch(e => {
+                console.log('自动播放被浏览器阻止，需要用户手动播放');
+                showNotification('请点击视频播放按钮开始播放', 'info');
+            });
         }
         
-        // 添加键盘事件监听（仅支持ESC关闭）
+        // 添加键盘事件监听（支持ESC关闭和空格播放/暂停）
         document.addEventListener('keydown', handleVideoModalKeydown);
         
         // 播放按钮点击效果
@@ -1011,12 +1012,7 @@ function openVideoModal() {
         }
         
         // 显示通知
-        showNotification('B站视频播放器已打开', 'info');
-        
-        // 延迟显示音频提示
-        setTimeout(() => {
-            showNotification('💡 如果视频静音，请点击播放器右下角音量按钮开启声音', 'warning', 5000);
-        }, 2000);
+        showNotification('视频播放器已打开', 'info');
     }
 }
 
@@ -1029,9 +1025,10 @@ function closeVideoModal() {
         videoModal.classList.remove('show');
         document.body.style.overflow = ''; // 恢复背景滚动
         
-        // 停止视频播放：清空iframe的src来停止播放
+        // 停止本地视频播放
         if (modalVideo) {
-            modalVideo.src = 'about:blank'; // 清空iframe内容，停止播放
+            modalVideo.pause();
+            modalVideo.currentTime = 0; // 重置到开始位置
         }
         
         // 重置播放按钮图标为播放状态
@@ -1061,67 +1058,58 @@ function handleVideoModalKeydown(e) {
             e.preventDefault();
             closeVideoModal();
             break;
-        // iframe模式下不支持视频控制快捷键
+        case ' ': // 空格键
+            e.preventDefault();
+            if (modalVideo) {
+                if (modalVideo.paused) {
+                    modalVideo.play();
+                    showNotification('视频已播放', 'info');
+                } else {
+                    modalVideo.pause();
+                    showNotification('视频已暂停', 'info');
+                }
+            }
+            break;
+        case 'ArrowLeft':
+            e.preventDefault();
+            if (modalVideo) {
+                modalVideo.currentTime = Math.max(0, modalVideo.currentTime - 10);
+                showNotification('后退10秒', 'info');
+            }
+            break;
+        case 'ArrowRight':
+            e.preventDefault();
+            if (modalVideo) {
+                modalVideo.currentTime = Math.min(modalVideo.duration, modalVideo.currentTime + 10);
+                showNotification('前进10秒', 'info');
+            }
+            break;
     }
 }
 
-// B站iframe播放器初始化
+// 本地视频播放器初始化
 function initializeVideoPlayer() {
-    // 由于使用B站iframe播放器，无法直接控制视频事件
-    // 仅保留必要的初始化逻辑
-    console.log('B站视频播放器已初始化');
+    console.log('本地视频播放器已初始化');
     
     const modalVideo = document.getElementById('modalVideo');
     if (modalVideo) {
-        // iframe加载完成监听
-        modalVideo.addEventListener('load', function() {
-            console.log('B站视频iframe加载完成');
+        // 监听视频加载事件
+        modalVideo.addEventListener('loadeddata', function() {
+            console.log('视频数据加载完成');
         });
         
-        // iframe加载错误监听
         modalVideo.addEventListener('error', function(e) {
-            console.error('B站视频iframe加载错误:', e);
-            showVideoFallback();
+            console.error('视频加载错误:', e);
+            showNotification('视频加载失败，请检查视频文件是否存在', 'error');
         });
         
-        // 设置加载超时检测 (5秒后如果还没加载成功就显示备用方案)
-        setTimeout(() => {
-            checkIframeLoad();
-        }, 5000);
+        modalVideo.addEventListener('ended', function() {
+            console.log('视频播放结束');
+            showNotification('视频播放完毕', 'info');
+        });
     }
 }
 
-// 检查iframe是否正常加载
-function checkIframeLoad() {
-    const modalVideo = document.getElementById('modalVideo');
-    const fallback = document.getElementById('videoFallback');
-    
-    if (modalVideo && fallback && fallback.style.display === 'none') {
-        try {
-            // 检查iframe内容是否可访问
-            if (!modalVideo.contentDocument && !modalVideo.contentWindow) {
-                console.log('iframe内容无法访问，可能被跨域限制');
-                showVideoFallback();
-            }
-        } catch (e) {
-            // 跨域访问被阻止，这是正常情况，不显示备用方案
-            console.log('iframe跨域访问正常被阻止，说明iframe正在正常工作');
-        }
-    }
-}
-
-// 显示视频播放备用方案
-function showVideoFallback() {
-    const modalVideo = document.getElementById('modalVideo');
-    const fallback = document.getElementById('videoFallback');
-    
-    if (modalVideo && fallback) {
-        modalVideo.style.display = 'none';
-        fallback.style.display = 'flex';
-        showNotification('iframe加载失败，已切换到备用方案', 'warning');
-        console.log('视频iframe加载失败，显示备用跳转链接');
-    }
-}
 
 // 初始化首页视频
 function initializeHeroVideo() {

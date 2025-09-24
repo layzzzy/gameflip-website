@@ -416,32 +416,10 @@
         <div class="video-modal-content">
             <div class="video-modal-body">
                 <div class="video-container">
-                    <iframe id="modalVideo" 
-                            src="about:blank"
-                            data-video-src="https://player.bilibili.com/player.html?aid=115257729094782&bvid=BV1dhJXz6EBJ&cid=32594330927&p=1&high_quality=1&danmaku=1&autoplay=1&as_wide=1" 
-                            width="100%" 
-                            height="450" 
-                            scrolling="no" 
-                            border="0" 
-                            frameborder="0" 
-                            framespacing="0" 
-                            allowfullscreen="true"
-                            allow="autoplay; fullscreen; encrypted-media"
-                            referrerpolicy="no-referrer-when-downgrade"
-                            onerror="showVideoFallback()">
-                    </iframe>
-                    <!-- 备用方案：跳转链接 -->
-                    <div id="videoFallback" class="video-fallback" style="display: none;">
-                        <div class="fallback-content">
-                            <i class="fas fa-play-circle fallback-icon"></i>
-                            <h3>视频播放</h3>
-                            <p>点击下方按钮前往B站观看视频</p>
-                            <a href="https://www.bilibili.com/video/BV1dhJXz6EBJ/" target="_blank" class="fallback-button">
-                                <i class="fab fa-bilibili"></i>
-                                前往B站观看
-                            </a>
-                        </div>
-                    </div>
+                    <video id="modalVideo" class="modal-video" controls>
+                        <source src="res/videoplay.mp4" type="video/mp4">
+                        您的浏览器不支持视频播放。
+                    </video>
                 </div>
             </div>
         </div>
