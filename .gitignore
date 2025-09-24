@@ -19,3 +19,6 @@ Thumbs.db
 # 忽略部署相关文件（本地用）
 deploy.sh
 DEPLOY_GUIDE.md
+
+# 忽略大视频文件（避免GitHub推送失败）
+res/videoplay.mp4

@@ -905,7 +905,7 @@ function toggleHeroVideo() {
     }
 }
 
-// 打开本地视频模态框
+// 打开哔哩哔哩视频模态框
 function openVideoModal() {
     const videoModal = document.getElementById('videoModal');
     const modalVideo = document.getElementById('modalVideo');
@@ -914,16 +914,13 @@ function openVideoModal() {
         videoModal.classList.add('show');
         document.body.style.overflow = 'hidden'; // 防止背景滚动
         
-        // 播放本地视频
+        // 设置哔哩哔哩视频iframe
         if (modalVideo) {
-            modalVideo.currentTime = 0; // 重置到开始位置
-            modalVideo.play().catch(e => {
-                console.log('自动播放被浏览器阻止，需要用户手动播放');
-                showNotification('请点击视频播放按钮开始播放', 'info');
-            });
+            const videoSrc = modalVideo.getAttribute('data-video-src');
+            modalVideo.src = videoSrc;
         }
         
-        // 添加键盘事件监听（支持ESC关闭和空格播放/暂停）
+        // 添加键盘事件监听（仅支持ESC关闭）
         document.addEventListener('keydown', handleVideoModalKeydown);
         
         // 播放按钮点击效果
@@ -934,9 +931,6 @@ function openVideoModal() {
                 playButton.style.transform = 'translate(-50%, -50%) scale(1)';
             }, 150);
         }
-        
-        // 显示通知
-        showNotification('视频播放器已打开', 'info');
     }
 }
 
@@ -949,10 +943,9 @@ function closeVideoModal() {
         videoModal.classList.remove('show');
         document.body.style.overflow = ''; // 恢复背景滚动
         
-        // 停止本地视频播放
+        // 停止哔哩哔哩视频播放
         if (modalVideo) {
-            modalVideo.pause();
-            modalVideo.currentTime = 0; // 重置到开始位置
+            modalVideo.src = 'about:blank'; // 清空iframe内容，停止播放
         }
         
         // 重置播放按钮图标为播放状态
@@ -982,54 +975,24 @@ function handleVideoModalKeydown(e) {
             e.preventDefault();
             closeVideoModal();
             break;
-        case ' ': // 空格键
-            e.preventDefault();
-            if (modalVideo) {
-                if (modalVideo.paused) {
-                    modalVideo.play();
-                    showNotification('视频已播放', 'info');
-                } else {
-                    modalVideo.pause();
-                    showNotification('视频已暂停', 'info');
-                }
-            }
-            break;
-        case 'ArrowLeft':
-            e.preventDefault();
-            if (modalVideo) {
-                modalVideo.currentTime = Math.max(0, modalVideo.currentTime - 10);
-                showNotification('后退10秒', 'info');
-            }
-            break;
-        case 'ArrowRight':
-            e.preventDefault();
-            if (modalVideo) {
-                modalVideo.currentTime = Math.min(modalVideo.duration, modalVideo.currentTime + 10);
-                showNotification('前进10秒', 'info');
-            }
-            break;
+        // iframe模式下不支持视频控制快捷键
     }
 }
 
-// 本地视频播放器初始化
+// 哔哩哔哩iframe播放器初始化
 function initializeVideoPlayer() {
-    console.log('本地视频播放器已初始化');
+    console.log('哔哩哔哩视频播放器已初始化');
     
     const modalVideo = document.getElementById('modalVideo');
     if (modalVideo) {
-        // 监听视频加载事件
-        modalVideo.addEventListener('loadeddata', function() {
-            console.log('视频数据加载完成');
+        // iframe加载完成监听
+        modalVideo.addEventListener('load', function() {
+            console.log('哔哩哔哩视频iframe加载完成');
         });
         
+        // iframe加载错误监听
         modalVideo.addEventListener('error', function(e) {
-            console.error('视频加载错误:', e);
-            showNotification('视频加载失败，请检查视频文件是否存在', 'error');
-        });
-        
-        modalVideo.addEventListener('ended', function() {
-            console.log('视频播放结束');
-            showNotification('视频播放完毕', 'info');
+            console.error('哔哩哔哩视频iframe加载错误:', e);
         });
     }
 }
