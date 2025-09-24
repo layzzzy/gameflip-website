@@ -595,89 +595,13 @@ function toggleAnimations() {
     }
 }
 
-// 通知系统
+// 通知系统（已禁用）
 function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas fa-${getNotificationIcon(type)}"></i>
-            <span>${message}</span>
-        </div>
-        <button class="notification-close">&times;</button>
-    `;
-    
-    // 定位到右上角
-    notification.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        border-left: 4px solid ${getNotificationColor(type)};
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        z-index: 10000;
-        transform: translateX(400px);
-        transition: transform 0.3s ease;
-        max-width: 350px;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // 动画进入
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // 关闭按钮
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        font-size: 1.2rem;
-        margin-left: 10px;
-    `;
-    
-    closeBtn.addEventListener('click', () => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => {
-            if (document.body.contains(notification)) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    });
-    
-    // 自动关闭
-    setTimeout(() => {
-        if (document.body.contains(notification)) {
-            closeBtn.click();
-        }
-    }, 4000);
+    // 所有通知都已禁用，不显示任何弹出提示
+    return;
 }
 
-function getNotificationIcon(type) {
-    const icons = {
-        'info': 'info-circle',
-        'success': 'check-circle',
-        'warning': 'exclamation-triangle',
-        'error': 'times-circle'
-    };
-    return icons[type] || 'info-circle';
-}
-
-function getNotificationColor(type) {
-    const colors = {
-        'info': '#3498db',
-        'success': '#2ecc71',
-        'warning': '#f39c12',
-        'error': '#e74c3c'
-    };
-    return colors[type] || '#3498db';
-}
+// 辅助函数已删除（通知系统已禁用）
 
 // 添加模态框样式到页面
 // 显示游戏详情页面
