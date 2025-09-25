@@ -3,12 +3,199 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化所有功能
     initNavigation();
     initAnimations();
-    initCardEffects();
     initScrollEffects();
     initKeyboardShortcuts();
     initializeFAQ();
     initializeGogHomepage();
+    initUserCounter();
+    
+    // 加载视频数据并初始化卡片
+    loadVideoData();
+    
+    // 延迟处理页面导航状态，确保所有组件都已初始化
+    setTimeout(handlePageNavigation, 100);
 });
+
+// 处理页面导航状态
+function handlePageNavigation() {
+    // 检查是否需要显示解构师页面（从详情页面返回）
+    if (sessionStorage.getItem('showAnalyzer')) {
+        const analyzerLink = document.querySelector('.nav-link[data-section="analyzer"]');
+        if (analyzerLink) {
+            analyzerLink.click();
+        }
+        // 清除标记，避免下次刷新时重复跳转
+        sessionStorage.removeItem('showAnalyzer');
+        return; // 已处理返回导航，无需处理其他情况
+    }
+    
+    // 处理URL哈希值（仅在首次访问时，不在刷新时）
+    const hash = window.location.hash.substring(1);
+    if (hash && !sessionStorage.getItem('hasVisited')) {
+        const targetLink = document.querySelector(`.nav-link[data-section="${hash}"]`);
+        if (targetLink) {
+            targetLink.click();
+        }
+    }
+    
+    // 标记已访问过页面，防止刷新时重复处理哈希
+    sessionStorage.setItem('hasVisited', 'true');
+    
+    // 清理URL中的哈希值，确保URL干净
+    if (window.location.hash) {
+        history.replaceState(null, null, window.location.pathname);
+    }
+}
+
+// 加载视频数据
+async function loadVideoData() {
+    const digestGrid = document.querySelector('.digest-grid');
+    
+    try {
+        console.log('正在加载视频数据...');
+        const response = await fetch('http://localhost:8000/data/games_video.json');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const videoData = await response.json();
+        console.log('视频数据加载成功:', videoData);
+        
+        // 生成解构师卡片
+        generateDigestCards(videoData);
+        
+        // 初始化卡片效果
+        initCardEffects();
+        
+    } catch (error) {
+        console.error('Failed to load video data:', error);
+        console.log('使用备用数据...');
+        
+        // 使用内嵌的备用数据
+        const fallbackData = [
+            {
+                "num": 1,
+                "title": "What's The Point Of Hard Games, Anyway?",
+                "desc": "Hey all! I'm hard at work on the first new episode of 游戏解构师 since my break. But I took a day to make this Mini video so I could join the game",
+                "link": "<iframe src=\"//player.bilibili.com/player.html?isOutside=true&aid=114945270222668&bvid=BV1J48CzUEbt&cid=31388861896&p=1\" scrolling=\"no\" border=\"0\" frameborder=\"no\" framespacing=\"0\" allowfullscreen=\"true\"></iframe>",
+                "cover": "data/covers/1.jpg",
+                "date": "20250925"
+            }
+        ];
+        
+        // 生成解构师卡片
+        generateDigestCards(fallbackData);
+        
+        // 初始化卡片效果
+        initCardEffects();
+    }
+}
+
+// 生成解构师卡片
+function generateDigestCards(videoData) {
+    const digestGrid = document.querySelector('.digest-grid');
+    if (!digestGrid) {
+        console.error('找不到 .digest-grid 元素');
+        return;
+    }
+    
+    console.log(`生成 ${videoData.length} 个视频卡片`);
+    
+    // 清空现有内容（包括加载占位符）
+    digestGrid.innerHTML = '';
+    
+    // 检查是否有数据
+    if (!videoData || videoData.length === 0) {
+        digestGrid.innerHTML = `
+            <div class="no-data-message" style="grid-column: 1 / -1; text-align: center; color: #888; padding: 40px;">
+                <i class="fas fa-video-slash" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                <h3 style="color: #ccc; margin: 20px 0;">暂无视频内容</h3>
+                <p>请检查 data/games_video.json 文件是否包含有效数据</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // 为每个视频数据生成卡片
+    videoData.forEach((video, index) => {
+        console.log(`生成卡片 ${index + 1}: ${video.title}`);
+        
+        // 转义单引号和双引号以避免HTML属性冲突
+        const escapedCover = video.cover.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        const escapedTitle = video.title.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        
+        // 确保图片使用完整的URL路径
+        let imageUrl = video.cover;
+        if (!imageUrl.startsWith('http') && !imageUrl.startsWith('//')) {
+            imageUrl = `http://localhost:8000/${imageUrl}`;
+        }
+        
+        // 临时使用在线placeholder图片进行测试
+        imageUrl = 'https://via.placeholder.com/400x250/8B5CF6/ffffff?text=Video+Thumbnail';
+        
+        const cardHTML = `
+            <article class="digest-card" data-video="${video.link.replace(/"/g, "&quot;")}">
+                <div class="card-image">
+                    <img src="${imageUrl}" 
+                         alt="${video.title}" 
+                         onerror="console.error('图片加载失败:', this.src); this.src='https://via.placeholder.com/400x250/8B5CF6/ffffff?text=Video';"
+                         onload="console.log('图片加载成功:', this.src);"
+                         style="display: block;">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">${video.title}</h3>
+                    <p class="card-description">${video.desc}</p>
+                </div>
+            </article>
+        `;
+        
+        console.log('即将插入卡片HTML，图片URL:', imageUrl);
+        
+        digestGrid.insertAdjacentHTML('beforeend', cardHTML);
+    });
+    
+    // 添加淡入动画效果和事件绑定
+    const cards = digestGrid.querySelectorAll('.digest-card');
+    console.log(`添加动画效果到 ${cards.length} 个卡片`);
+    
+    cards.forEach((card, index) => {
+        // 添加动画效果
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+        
+        // 绑定点击事件
+        card.addEventListener('click', function() {
+            console.log('卡片被点击:', this);
+            openDigestPage(this);
+        });
+        
+        // 绑定悬停效果
+        card.addEventListener('mousemove', function(e) {
+            if (!card.classList.contains('locked')) {
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const deltaX = (e.clientX - centerX) * 0.03;
+                const deltaY = (e.clientY - centerY) * 0.03;
+                
+                card.style.transform = `translateY(-8px) rotateX(${-deltaY}deg) rotateY(${deltaX}deg)`;
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            card.style.transform = '';
+        });
+    });
+    
+    console.log('卡片生成完成，事件已绑定');
+}
 
 // 导航功能
 function initNavigation() {
@@ -377,7 +564,7 @@ function showSubscriptionInfo() {
         
         <div class="subscription-content">
             <div class="subscription-intro">
-                <p>解锁GMTK解构师的全部内容，获取深度游戏分析和独家见解。</p>
+                <p>解锁游戏解构师的全部内容，获取深度游戏分析和独家见解。</p>
             </div>
             
             <div class="plans-container">
@@ -444,107 +631,192 @@ function showSubscriptionInfo() {
     showSubscriptionPage(subscriptionPageContent);
 }
 
-// 直接打开解构师内容页面
+// 直接打开哔哩哔哩视频
 function openDigestPage(digestCard) {
-    const title = digestCard.querySelector('.card-title').textContent;
-    const description = digestCard.querySelector('.card-description').textContent;
+    console.log('🎬 openDigestPage 被调用，卡片:', digestCard);
     
-    const digestPageContent = `
-        <div class="page-header">
-            <button class="back-btn" onclick="goBackToAnalyzer()">
-                <i class="fas fa-arrow-left"></i> 返回解构师
-            </button>
-            <h1 class="page-title">${title}</h1>
-            <div class="page-subtitle">游戏设计深度分析</div>
-        </div>
+    const videoUrl = digestCard.getAttribute('data-video');
+    const videoTitle = digestCard.querySelector('.card-title')?.textContent || '游戏解构师视频';
+    
+    console.log('📹 视频URL:', videoUrl);
+    console.log('🏷️ 视频标题:', videoTitle);
+    
+    if (videoUrl) {
+        // 转换为嵌入式播放链接并打开弹窗
+        const embedUrl = convertBilibiliToEmbedUrl(videoUrl);
+        console.log('🔗 转换后的嵌入URL:', embedUrl);
         
-        <div class="digest-detail-content">
-            <div class="digest-meta">
-                <div class="meta-item">
-                    <i class="fas fa-calendar"></i>
-                    <span>发布时间: 2024年9月23日</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-clock"></i>
-                    <span>阅读时长: 约15分钟</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-eye"></i>
-                    <span>浏览量: 3,247</span>
-                </div>
-            </div>
-            
-            <div class="digest-main-content">
-                <div class="content-intro">
-                    <p class="intro-text">${description}</p>
-                </div>
-                
-                <div class="content-sections">
-                    <section class="content-section">
-                        <h3><i class="fas fa-gamepad"></i> 游戏机制深度分析</h3>
-                        <p>本期我们深入分析了现代游戏中AI系统的设计原理。通过对多款热门游戏的解构，我们发现优秀的AI不仅仅是复杂的算法，更是与玩家体验紧密结合的设计哲学。</p>
-                        <p>从《巫师3》的NPC行为系统，到《文明6》的战略AI，每一个成功的案例都展现了游戏设计者对玩家心理的深刻理解。</p>
-                    </section>
-                    
-                    <section class="content-section">
-                        <h3><i class="fas fa-lightbulb"></i> 设计理念解读</h3>
-                        <p>优秀的游戏AI应该是invisible的 - 它不应该让玩家感觉到是在与机器对话，而是在与一个有生命的角色互动。这种设计理念的核心在于：</p>
-                        <ul>
-                            <li>可预测性与惊喜的平衡</li>
-                            <li>适应性学习机制</li>
-                            <li>情境感知能力</li>
-                            <li>错误恢复策略</li>
-                        </ul>
-                    </section>
-                    
-                    <section class="content-section">
-                        <h3><i class="fas fa-microphone"></i> 开发者访谈摘要</h3>
-                        <p>我们采访了几位知名游戏开发者，了解他们在AI设计过程中遇到的挑战和解决方案：</p>
-                        <blockquote>
-                            "最大的挑战不是让AI变得更聪明，而是让它变得更'人性化'。玩家能够容忍一个愚蠢但有趣的AI，但无法忍受一个完美但无聊的对手。"
-                            <cite>- 某知名RPG制作人</cite>
-                        </blockquote>
-                    </section>
-                    
-                    <section class="content-section">
-                        <h3><i class="fas fa-comments"></i> 社区反馈汇总</h3>
-                        <p>来自玩家社区的反馈显示，最受欢迎的AI特征包括：</p>
-                        <div class="feedback-stats">
-                            <div class="stat">
-                                <div class="stat-number">73%</div>
-                                <div class="stat-label">喜欢有个性的AI角色</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-number">68%</div>
-                                <div class="stat-label">重视AI的学习能力</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-number">81%</div>
-                                <div class="stat-label">希望AI有适度挑战性</div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                
-                <div class="digest-actions">
-                    <button class="btn-primary">
-                        <i class="fas fa-heart"></i>
-                        收藏文章
-                    </button>
-                    <button class="btn-secondary">
-                        <i class="fas fa-share"></i>
-                        分享给朋友
-                    </button>
-                    <button class="btn-secondary">
-                        <i class="fas fa-comment"></i>
-                        参与讨论
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
+        if (embedUrl) {
+            openVideoModalWithUrl(embedUrl, videoTitle);
+        } else {
+            console.warn('⚠️ 转换失败，降级为新窗口打开');
+            // 如果转换失败，降级为新窗口打开
+            window.open(videoUrl, '_blank');
+        }
+    } else {
+        console.error('❌ 没有找到视频链接');
+        // 如果没有视频链接，显示提示
+        alert('该内容的视频链接暂未配置');
+    }
+}
+
+// 将B站视频链接转换为嵌入式播放链接
+function convertBilibiliToEmbedUrl(videoUrl) {
+    try {
+        console.log('🔄 开始转换视频URL:', videoUrl);
+        
+        // 如果是iframe代码，提取src
+        if (videoUrl.includes('<iframe')) {
+            console.log('📄 检测到iframe代码，提取src...');
+            const srcMatch = videoUrl.match(/src=["']([^"']+)["']/);
+            if (srcMatch) {
+                let src = srcMatch[1];
+                console.log('📄 提取的src:', src);
+                // 处理协议相对URL
+                if (src.startsWith('//')) {
+                    src = 'https:' + src;
+                    console.log('🔗 添加协议后:', src);
+                }
+                videoUrl = src;
+            } else {
+                console.error('❌ 无法从iframe中提取src');
+                return null;
+            }
+        }
+        
+        // 检查是否是B站链接
+        if (!videoUrl.includes('bilibili.com')) {
+            return null;
+        }
+        
+        // 如果已经是嵌入式链接，直接返回并添加自动播放参数
+        if (videoUrl.includes('player.bilibili.com')) {
+            // 确保包含自动播放和声音参数
+            const url = new URL(videoUrl);
+            url.searchParams.set('autoplay', '1');
+            url.searchParams.set('muted', '0'); // 不静音
+            url.searchParams.set('high_quality', '1');
+            url.searchParams.set('danmaku', '1');
+            url.searchParams.set('as_wide', '1');
+            url.searchParams.set('t', '0'); // 从头播放
+            url.searchParams.set('volume', '0.2'); // 设置音量为20%
+            return url.toString();
+        }
+        
+        // 提取BV号或aid
+        let bvid = null;
+        let aid = null;
+        
+        // 从URL中提取BV号
+        const bvMatch = videoUrl.match(/BV[0-9A-Za-z]+/);
+        if (bvMatch) {
+            bvid = bvMatch[0];
+        }
+        
+        // 从URL中提取aid（如果有）
+        const aidMatch = videoUrl.match(/av(\d+)/);
+        if (aidMatch) {
+            aid = aidMatch[1];
+        }
+        
+        // 构建嵌入式播放链接
+        if (bvid) {
+            return `https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=1&muted=0&high_quality=1&danmaku=1&as_wide=1&t=0&volume=0.2`;
+        } else if (aid) {
+            return `https://player.bilibili.com/player.html?aid=${aid}&autoplay=1&muted=0&high_quality=1&danmaku=1&as_wide=1&t=0&volume=0.2`;
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('转换B站链接失败:', error);
+        return null;
+    }
+}
+
+// 用指定URL打开视频模态框
+function openVideoModalWithUrl(embedUrl, title = '视频播放') {
+    const videoModal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
     
-    showDigestDetailPage(digestPageContent);
+    if (videoModal && modalVideo) {
+        // 立即显示模态框，不等待视频加载
+        videoModal.classList.add('show');
+        document.body.style.overflow = 'hidden'; // 防止背景滚动
+        
+        // 添加键盘事件监听（仅支持ESC关闭）
+        document.addEventListener('keydown', handleVideoModalKeydown);
+        
+        console.log('✅ 视频弹窗已立即打开，开始加载视频...');
+        console.log('🎬 视频标题:', title);
+        
+        // 设置iframe的src开始加载视频
+        modalVideo.src = embedUrl;
+        
+        // 监听iframe加载完成事件
+        modalVideo.onload = function() {
+            console.log('🎥 视频加载完成');
+            
+            // 尝试设置视频音量为20%
+            setTimeout(() => {
+                try {
+                    setVideoVolume(modalVideo, 0.2);
+                } catch (error) {
+                    console.log('无法直接控制iframe内视频音量，依赖URL参数设置');
+                }
+            }, 1000); // 等待1秒让B站播放器完全初始化
+        };
+        
+        // 监听iframe加载错误事件
+        modalVideo.onerror = function() {
+            console.error('❌ 视频加载失败');
+        };
+        
+        console.log('🔗 开始加载视频URL:', embedUrl);
+        
+    } else {
+        console.error('找不到视频模态框元素');
+        // 降级为新窗口打开
+        window.open(embedUrl, '_blank');
+    }
+}
+
+
+// 设置视频音量
+function setVideoVolume(modalVideo, volume) {
+    try {
+        console.log(`🔊 尝试设置视频音量为 ${Math.round(volume * 100)}%`);
+        
+        // 方法1: 通过postMessage与B站播放器通信
+        modalVideo.contentWindow.postMessage({
+            type: 'bilibili_player_cmd',
+            cmd: 'volume',
+            data: volume
+        }, '*');
+        
+        // 方法2: 尝试其他可能的命令格式
+        modalVideo.contentWindow.postMessage({
+            type: 'volume',
+            volume: volume
+        }, '*');
+        
+        // 方法3: 尝试直接访问iframe内的视频元素（可能因跨域限制失败）
+        try {
+            const iframeDoc = modalVideo.contentDocument || modalVideo.contentWindow.document;
+            const videos = iframeDoc.querySelectorAll('video');
+            videos.forEach(video => {
+                if (video.volume !== undefined) {
+                    video.volume = volume;
+                    video.muted = false;
+                    console.log(`✅ 已设置视频音量为 ${Math.round(volume * 100)}%`);
+                }
+            });
+        } catch (e) {
+            console.log('跨域限制：无法直接访问iframe内容');
+        }
+        
+    } catch (error) {
+        console.warn('设置视频音量失败:', error);
+    }
 }
 
 // 创建模态框
@@ -614,15 +886,6 @@ function showGameDetailPage(content) {
     `;
 }
 
-// 显示解构师详情页面
-function showDigestDetailPage(content) {
-    const mainContent = document.querySelector('.main-content');
-    mainContent.innerHTML = `
-        <section class="content-section active digest-detail-page">
-            ${content}
-        </section>
-    `;
-}
 
 // 显示订阅页面
 function showSubscriptionPage(content) {
@@ -639,15 +902,6 @@ function goBackToHome() {
     location.reload(); // 简单重新加载页面
 }
 
-// 返回解构师页面
-function goBackToAnalyzer() {
-    const mainContent = document.querySelector('.main-content');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const analyzerSection = document.getElementById('analyzer');
-    
-    // 重新加载原始页面内容
-    location.reload();
-}
 
 const modalStyles = `
 <style>
@@ -946,6 +1200,8 @@ function closeVideoModal() {
         // 停止哔哩哔哩视频播放
         if (modalVideo) {
             modalVideo.src = 'about:blank'; // 清空iframe内容，停止播放
+            modalVideo.onload = null; // 清理事件监听器
+            modalVideo.onerror = null; // 清理事件监听器
         }
         
         // 重置播放按钮图标为播放状态
@@ -1039,6 +1295,66 @@ function initializeHeroVideo() {
             console.error('视频加载错误:', e);
             showNotification('视频文件加载失败，请检查 res/display.mp4 是否存在', 'error');
         });
+    }
+}
+
+// 用户计数器功能
+function initUserCounter() {
+    const userCountElement = document.getElementById('userCount');
+    const userCountElement2 = document.getElementById('userCount2');
+    const downloadBtn1 = document.getElementById('download-btn-1');
+    const downloadBtn2 = document.getElementById('download-btn-2');
+    
+    if (!userCountElement && !userCountElement2) return;
+    
+    // 从localStorage获取当前计数，如果不存在则使用基础值1000
+    let currentCount = localStorage.getItem('gameflip_user_count');
+    if (currentCount === null) {
+        currentCount = 1000;
+        localStorage.setItem('gameflip_user_count', currentCount);
+    } else {
+        currentCount = parseInt(currentCount);
+    }
+    
+    // 更新显示
+    function updateCounter() {
+        const formattedCount = currentCount.toLocaleString();
+        if (userCountElement) {
+            userCountElement.textContent = formattedCount;
+        }
+        if (userCountElement2) {
+            userCountElement2.textContent = formattedCount;
+        }
+    }
+    
+    // 增加计数
+    function incrementCounter() {
+        currentCount++;
+        localStorage.setItem('gameflip_user_count', currentCount);
+        updateCounter();
+        
+        // 简单的动画效果
+        const elements = [userCountElement, userCountElement2].filter(el => el);
+        elements.forEach(element => {
+            element.style.transform = 'scale(1.1)';
+            element.style.color = '#A855F7';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+                element.style.color = '#8B5CF6';
+            }, 200);
+        });
+    }
+    
+    // 初始显示
+    updateCounter();
+    
+    // 为两个下载按钮添加点击事件
+    if (downloadBtn1) {
+        downloadBtn1.addEventListener('click', incrementCounter);
+    }
+    
+    if (downloadBtn2) {
+        downloadBtn2.addEventListener('click', incrementCounter);
     }
 }
 

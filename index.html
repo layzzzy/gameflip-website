@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameFlip - 游戏平台</title>
+    <title>GameFlip 1.0 - 喜欢就翻，即刻下载</title>
     <link rel="icon" type="image/png" href="res/icon.png">
     <link rel="stylesheet" href="css/gog-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -23,7 +23,12 @@
                     </li>
                     <li class="nav-item">
                         <a href="#analyzer" class="nav-link" data-section="analyzer">
-                            <span>解构师</span>
+                            <span>游戏解构师</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#promotion" class="nav-link" data-section="promotion">
+                            <span>推广计划</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -53,7 +58,7 @@
             <!-- 英雄区域 -->
             <div class="hero-section">
                 <div class="hero-content">
-                    <h1 class="hero-title">GameFlip 1.0 游戏下载器</h1>
+                    <h1 class="hero-title">GameFlip 1.0 桌面下载器</h1>
                     <p class="hero-subtitle">喜欢就翻，即刻下载！</p>
                     
                     <div class="hero-app-preview">
@@ -74,9 +79,13 @@
                         发现优质单机游戏，享受无广告纯净下载体验。GameFlip 1.0 为您精选最新最热门的单机游戏，一键下载，畅玩无限！
                     </p>
                     
-                    <button class="download-btn-large">
+                    <a href="https://pan.quark.cn/s/cc89d77b9eab?pwd=fGJ7" target="_blank" class="download-btn-large" id="download-btn-1">
                         即刻下载
-                    </button>
+                    </a>
+                    
+                    <p class="user-count">
+                        <strong>超过 <span id="userCount">1,000</span> 玩家正在使用</strong>
+                    </p>
                     
                     <p class="system-requirements">
                         GameFlip 目前仅支持 Windows 8 及以上版本，暂不支持 macOS
@@ -94,10 +103,8 @@
             <!-- Your Games 部分 -->
             <div class="your-games-section">
                 <div class="section-content">
-                    <div class="app-preview-large">
-                    </div>
-                    <div class="purple-icon">
-                        <img src="res/icon.png" alt="GameFlip Robot" class="robot-games-icon">
+                    <div class="games-background-image">
+                        <img src="res/bg_yourgames.png" alt="游戏背景" class="games-bg-img">
                     </div>
                     <p class="section-description">
                         将跨平台的所有游戏整理为一个功能完善且美观的统一游戏库
@@ -109,31 +116,41 @@
             <div class="features-section">
                 <div class="features-grid">
                     <div class="feature-item">
-                        <div class="feature-icon">▢</div>
-                        <h3>One library</h3>
-                        <p>将各平台的游戏下载源整合到一个总库，分类 / 搜索 / 筛选一次搞定，高效找游戏。</p>
+                        <div class="feature-icon">
+                            <img src="res/icon_gameLibrary.png" alt="游戏库图标" class="feature-icon-img">
+                        </div>
+                        <h3>游戏下载管理库</h3>
+                        <p>将各平台的游戏下载源整合到一个总库，分类 / 搜索 / 筛选一次搞定。</p>
                     </div>
                     
                     <div class="feature-item">
-                        <div class="feature-icon">📊</div>
+                        <div class="feature-icon">
+                            <img src="res/icon_games_1.png" alt="游戏图标" class="feature-icon-img">
+                        </div>
                         <h3>超16000+款游戏（PC & Switch）</h3>
                         <p>已收录 16000+ 款，覆盖 PC 与 Switch，每天持续更新，新作与更新包及时同步。</p>
                     </div>
                     
                     <div class="feature-item">
-                        <div class="feature-icon">🚀</div>
+                        <div class="feature-icon">
+                            <img src="res/icon_video.png" alt="视频图标" class="feature-icon-img">
+                        </div>
                         <h3>悬停视频预览</h3>
                         <p>游戏视频轻松预览：鼠标悬停即可查看关键片段，喜不喜欢一目了然。</p>
                     </div>
                     
                     <div class="feature-item">
-                        <div class="feature-icon">⚙️</div>
+                        <div class="feature-icon">
+                            <img src="res/rank.png" alt="榜单图标" class="feature-icon-img">
+                        </div>
                         <h3>榜单与专题</h3>
                         <p>推荐 / 最新 / 热门 / 高分 / 专题应有尽有，轻松掌握当下流行度与最新作品；独立的真人影游专题，第一时间更新。</p>
                     </div>
                     
                     <div class="feature-item">
-                        <div class="feature-icon">🔍</div>
+                        <div class="feature-icon">
+                            <img src="res/icon_download.png" alt="下载图标" class="feature-icon-img">
+                        </div>
                         <h3>极速搜索与收藏</h3>
                         <p>下载不限次数、无需验证；搜索秒级响应，想要什么搜什么；看到喜欢的直接收藏，稍后再下载。</p>
                     </div>
@@ -145,26 +162,36 @@
                 <div class="client-content">
                     <div class="client-info">
                         <h2>你的GameFlip客户端</h2>
-                        <p class="client-subtitle">运行并更新你的 GameFlip 游戏的最佳方式。</p>
+                        <p class="client-subtitle">运行并更新你的 GameFlip 游戏的最佳方式</p>
                         
                         <div class="client-features">
                             <div class="client-feature-grid">
                                 <div class="client-feature">
-                                    <div class="client-feature-icon">1.0</div>
+                                    <div class="client-feature-icon">
+                                        <img src="res/icon_new.png" alt="NEW图标" class="client-feature-icon-img">
+                                    </div>
                                     <h4>全新体验（1.0）</h4>
-                                    <p>简单的游戏库下载管理功能。</p>
+                                    <p>每一张游戏卡片，集实机视频预览、下载、收藏与信息于一体。<br/>
+                                    摒弃层层页面与繁琐流程，极简界面，上手即用。<br/>
+                                    支持输入即搜的瞬时搜索，无次数限制、几乎零等待。</p>
                                 </div>
                                 
                                 <div class="client-feature">
-                                    <div class="client-feature-icon">🔄</div>
+                                    <div class="client-feature-icon">
+                                        <img src="res/icon_update.png" alt="更新图标" class="client-feature-icon-img">
+                                    </div>
                                     <h4>自动更新</h4>
-                                    <p>让你的GameFlip游戏内容始终保持最新。</p>
+                                    <p>每天自动更新最新游戏数据，并以玩家口碑（rating）、媒体评分（metacritic）、平均时长（playtime）、热度指数与精选优先度（PrimeRank）驱动智能推荐与排序。</p>
                                 </div>
                                 
                                 <div class="client-feature">
-                                    <div class="client-feature-icon">📋</div>
+                                    <div class="client-feature-icon">
+                                        <img src="res/icon_version.png" alt="版本图标" class="client-feature-icon-img">
+                                    </div>
                                     <h4>版本更新和记录</h4>
-                                    <p>定期更新版本，使GameFlip始终高效率运行。</p>
+                                    <p>我们将定期发布更新版本，让 GameFlip 持续进化。<br/>
+                                    基于用户反馈及时修复问题并完善细节，同时优化与迭代各项功能。<br/>
+                                    每一次发布都以稳定与效率为目标，带来更流畅、更可靠的运行表现。</p>
                                 </div>
                             </div>
                         </div>
@@ -178,15 +205,19 @@
                     <div class="logo-circle">
                         <img src="res/icon.png" alt="GameFlip Robot" class="robot-icon">
                     </div>
-                    <h2>GameFlip 1.0 游戏下载器</h2>
+                    <h2>GameFlip 1.0 桌面下载器</h2>
                     <p>喜欢就翻，即刻下载！</p>
                     
-                    <button class="download-btn-large">
+                    <a href="https://pan.quark.cn/s/cc89d77b9eab?pwd=fGJ7" target="_blank" class="download-btn-large" id="download-btn-2">
                         即刻下载
-                    </button>
+                    </a>
+                    
+                    <p class="user-count">
+                        <strong>超过 <span id="userCount2">1,000</span> 玩家正在使用</strong>
+                    </p>
                     
                     <p class="download-description">
-                        Join the Open Beta, enjoy the app and share your feedback with us!
+                        一款桌面直下的游戏应用，加入我们分享你的反馈
                     </p>
                 </div>
             </div>
@@ -276,108 +307,99 @@
                                 <p>请发送邮件至 GameFlipX@hotmail.com，我们会尽快回复你。</p>
                             </div>
                         </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span class="question-dot">●</span>
+                                <span class="question-text">打开GameFlip.exe，无法运行，怎么解决？</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>缺少.NET 8.0 Desktop Runtime桌面应用必备组件，下载链接带有.NET 8.0 Desktop Runtime组件，按需选择x86或者x64即可。</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 解构师部分 -->
+        <!-- 游戏解构师部分 -->
         <section id="analyzer" class="content-section">
             <div class="page-header">
-                <h1 class="page-title">GMTK 解构师</h1>
+                <h1 class="page-title">游戏解构师</h1>
                 <div class="page-subtitle">游戏设计深度解析</div>
             </div>
             
             <div class="digest-grid">
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/4A90E2/ffffff?text=GMTK+Digest" alt="GMTK Digest August 2025">
+                <!-- 卡片内容将通过JavaScript从data/games_video.json动态加载 -->
+                <div class="loading-placeholder" style="grid-column: 1 / -1; text-align: center; color: #888; padding: 40px;">
+                    <i class="fas fa-spinner fa-spin"></i> 正在加载视频内容...
                     </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (August 2025)</h3>
-                        <p class="card-description">Hello GMTK supporters! Hope you've been enjoying the sunshine. Here's a run down of...</p>
                     </div>
-                </article>
-                
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/E74C3C/ffffff?text=GMTK+Digest" alt="GMTK Digest July 2025">
+        </section>
+
+        <!-- 推广计划部分 -->
+        <section id="promotion" class="content-section">
+            <div class="page-header">
+                <h1 class="page-title">🎮 GameFlip 玩家推广计划</h1>
+                <div class="page-subtitle">想要<strong>免费获得 GameFlip 永久使用权</strong> 吗？<br/>只要在 B站 / 小红书 分享，就能轻松解锁使用时长，最高还能拥有GameFlip <strong>永久使用权！</strong></div>
                     </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (July 2025)</h3>
-                        <p class="card-description">Hello GMTK supporters! Hope you've been enjoying the sunshine. Here's a run down of...</p>
+            
+            <div class="promotion-content">
+                <div class="promotion-table-container">
+                    <table class="promotion-table">
+                        <thead>
+                            <tr>
+                                <th>推广方式</th>
+                                <th>要求</th>
+                                <th>奖励时长</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="promotion-icon">⚠️</span> 基础互动</td>
+                                <td><a href="https://www.bilibili.com/video/BV1dhJXz6EBJ/?share_source=copy_web&vd_source=d3bc1eceec73195732d9180fee69353f" target="_blank" class="video-link"><strong>点击这里观看官方宣传视频</strong></a>，<strong>B站</strong>上关注官方账号，<strong>浅夏游戏无限玩</strong>，并<strong>点赞/评论第一个置顶视频</strong></td>
+                                <td>1个月</td>
+                            </tr>
+                            <tr>
+                                <td><span class="promotion-icon">📱</span> 轻量分享</td>
+                                <td>在 <strong>小红书</strong> 发布一条图文/笔记，或在 <strong>B站</strong> 发布体验动态（<strong>≥1张截图 + 体验文字</strong>）</td>
+                                <td>3个月</td>
+                            </tr>
+                            <tr>
+                                <td><span class="promotion-icon">👥</span> 使用演示</td>
+                                <td>上传一条 <strong>≥30秒视频</strong>（录屏/口播均可），展示 <strong>GameFlip</strong> 的使用过程，并附关键词"<strong>GameFlip</strong>"</td>
+                                <td>6个月</td>
+                            </tr>
+                            <tr>
+                                <td><span class="promotion-icon">📝</span> 深度测评</td>
+                                <td>发布 <strong>≥2分钟测评/教程视频</strong>（<strong>B站</strong>）或 <strong>≥5图详细笔记</strong>（<strong>小红书</strong>），讲解<strong>功能和体验</strong></td>
+                                <td>8个月</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td><span class="promotion-icon">⭐</span> 重度推广</td>
+                                <td>单条作品达到 <strong>1000播放/100点赞/100收藏</strong></td>
+                                <td><strong>永久使用</strong>（名额有限，前30名）</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     </div>
-                </article>
-                
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/9B59B6/ffffff?text=GMTK+Digest" alt="GMTK Digest June 2025">
+
+                <div class="promotion-section">
+                    <h2><span class="section-icon">🎯</span> 注意事项</h2>
+                    <ul class="promotion-rules">
+                        <li>内容需包含 <strong>"GameFlip"</strong> 关键词，正面、真实分享；</li>
+                        <li>视频/笔记需为原创，禁止抄袭、刷量；</li>
+                        <li class="highlight-rule">奖励将在 <strong>3个工作日内</strong> 发放；</li>
+                        <li class="highlight-rule">永久使用奖励名额有限，先到先得！</li>
+                    </ul>
                     </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (June 2025)</h3>
-                        <p class="card-description">Hello GMTK supporters! Okay, I'm gonna level with you. My game is releasing in two weeks. I've...</p>
+
+                <div class="promotion-section">
+                    <h2><span class="section-icon">🚀</span> 提交方式</h2>
+                    <div class="submit-single">
+                        发送邮件至 <span class="email-highlight">GameFlipX@hotmail.com</span>，主题写<strong>"推广提交+昵称（B站/小红书）"</strong>，正文粘贴 <strong>B站/小红书链接 + 奖励发放邮箱 + 推广类型（基础互动/轻量分享/使用演示/深度测评/重度推广）</strong>；审核通过后，我们会把激活码回邮给您<strong>（3个工作日内）</strong>。
                     </div>
-                </article>
-                
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/F39C12/ffffff?text=GMTK+Digest" alt="GMTK Digest May 2025">
                     </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (May 2025)</h3>
-                        <p class="card-description">Hello GMTK fans! Thanks for your support this month. Things have been a bit wild for me - I've...</p>
-                    </div>
-                </article>
-                
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/E91E63/ffffff?text=GMTK+Digest" alt="GMTK Digest April 2025">
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (April 2025)</h3>
-                        <p class="card-description">Hello GMTK supporters! So April was a bit of a write-off. I spent much of it nursing a broken...</p>
-                    </div>
-                </article>
-                
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/2196F3/ffffff?text=GMTK+Digest" alt="GMTK Digest March 2025">
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (March 2025)</h3>
-                        <p class="card-description">Hello GMTK supporters! March was a busy month for me. I was either prepping for GDC...</p>
-                    </div>
-                </article>
-                
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/4CAF50/ffffff?text=GMTK+Digest" alt="GMTK Digest February 2025">
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (February 2025)</h3>
-                        <p class="card-description">Hello GMTK supporters! It feels like the games biz just woke up from its post-Christmas slumb...</p>
-                    </div>
-                </article>
-                
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/607D8B/ffffff?text=GMTK+Digest" alt="GMTK Digest January 2025">
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (January 2025)</h3>
-                        <p class="card-description">Hello! Happy new year! Sorry, it's a bit late for that. But this is also the first GMTK Digest of...</p>
-                    </div>
-                </article>
-                
-                <article class="digest-card">
-                    <div class="card-image">
-                        <img src="https://via.placeholder.com/400x250/FF5722/ffffff?text=GMTK+Digest" alt="GMTK Digest December 2024">
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">GMTK Digest (December 2024)</h3>
-                        <p class="card-description">Hello Patrons! Apologies for the delay. But it's time to round out 2024 with a look back at what...</p>
-                    </div>
-                </article>
             </div>
         </section>
 
@@ -391,20 +413,25 @@
             <div class="about-content">
                 <div class="about-section">
                     <h2>我们的使命</h2>
-                    <p>致力于为游戏玩家提供最优质的游戏体验和深度的游戏分析内容。通过专业的游戏解构和评测，帮助玩家发现真正优秀的游戏作品。</p>
+                    <p>让玩家高效、安全地获取优秀游戏，同时通过系统化的游戏设计拆解，把"为什么好"的底层逻辑讲清楚——</p>
+                    <p><strong>既能玩到更多，更能学会如何做。</strong></p>
+                    <p>我们相信：<strong>工具让好内容触达你，方法让你成为更好的创作者。</strong></p>
                 </div>
                 
                 <div class="about-section">
                     <h2>团队介绍</h2>
-                    <p>我们是一群热爱游戏的专业人士，拥有丰富的游戏行业经验。从游戏设计到技术实现，从市场分析到用户体验，我们用多年的专业知识为玩家服务。</p>
+                    <p>我们是一支兼具产品研发与内容研究的团队：</p>
+                    <p><strong>工具线｜GameFlip 1.0</strong>：专注稳定下载、极简交互与持续更新，让获取游戏像一次顺滑的启动。</p>
+                    <p><strong>内容线｜设计拆解</strong>：由策划/程序/美术联合撰写，从机制、数值到体验，输出可复用的设计方法论。</p>
+                    <p>我们用一个好工具与一套好方法，服务玩家与创作者：</p>
+                    <p><strong>今天玩得更好，明天做得更好。</strong></p>
                 </div>
                 
                 <div class="about-section">
                     <h2>联系方式</h2>
                     <div class="contact-info">
-                        <p><i class="fas fa-envelope"></i> contact@gameflip.com</p>
-                        <p><i class="fas fa-phone"></i> +86 400-123-4567</p>
-                        <p><i class="fas fa-map-marker-alt"></i> 中国北京市朝阳区</p>
+                        <p><i class="fas fa-envelope"></i> GameFlipX@hotmail.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> 中国广东省广州市</p>
                     </div>
                 </div>
             </div>
@@ -414,6 +441,7 @@
     <!-- 视频弹窗模态框 -->
     <div id="videoModal" class="video-modal">
         <div class="video-modal-content">
+            <span class="video-modal-close" onclick="closeVideoModal()">×</span>
             <div class="video-modal-body">
                 <div class="video-container">
                     <iframe id="modalVideo" 
@@ -427,8 +455,21 @@
                             framespacing="0" 
                             allowfullscreen="true"
                             allow="autoplay; fullscreen; encrypted-media"
-                            referrerpolicy="no-referrer-when-downgrade">
+                            referrerpolicy="no-referrer-when-downgrade"
+                            onerror="showVideoFallback()">
                     </iframe>
+                    <!-- 备用方案：跳转链接 -->
+                    <div id="videoFallback" class="video-fallback" style="display: none;">
+                        <div class="fallback-content">
+                            <i class="fas fa-play-circle fallback-icon"></i>
+                            <h3>视频播放</h3>
+                            <p>点击下方按钮前往B站观看视频</p>
+                            <a href="https://www.bilibili.com/video/BV1dhJXz6EBJ/" target="_blank" class="fallback-button">
+                                <i class="fab fa-bilibili"></i>
+                                前往B站观看
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
