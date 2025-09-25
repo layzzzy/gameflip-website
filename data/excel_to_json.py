@@ -49,7 +49,7 @@ def excel_to_json(excel_file='games_video.xlsx', json_file='games_video.json'):
                 'title': str(row['title']).strip() if not pd.isna(row['title']) else '',
                 'desc': str(row['desc']).strip() if not pd.isna(row['desc']) else '',
                 'link': str(row['link']).strip() if not pd.isna(row['link']) else '',
-                'cover': str(row['cover']).strip() if not pd.isna(row['cover']) else f'https://via.placeholder.com/400x250/8B5CF6/ffffff?text=Video+{index+1}',
+                'cover': f"data/covers/{str(row['cover']).strip()}.jpg" if not pd.isna(row['cover']) else f'https://via.placeholder.com/400x250/8B5CF6/ffffff?text=Video+{index+1}',
                 'date': str(row['date']).strip() if not pd.isna(row['date']) else datetime.now().strftime('%Y%m%d')
             }
             

@@ -53,7 +53,7 @@ async function loadVideoData() {
     
     try {
         console.log('正在加载视频数据...');
-        const response = await fetch('http://localhost:8000/data/games_video.json');
+        const response = await fetch('data/games_video.json');
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -76,8 +76,8 @@ async function loadVideoData() {
         const fallbackData = [
             {
                 "num": 1,
-                "title": "What's The Point Of Hard Games, Anyway?",
-                "desc": "Hey all! I'm hard at work on the first new episode of 游戏解构师 since my break. But I took a day to make this Mini video so I could join the game",
+                "title": "《空洞骑士》音乐全拆解（总集）",
+                "desc": "全网最细140分钟",
                 "link": "<iframe src=\"//player.bilibili.com/player.html?isOutside=true&aid=114945270222668&bvid=BV1J48CzUEbt&cid=31388861896&p=1\" scrolling=\"no\" border=\"0\" frameborder=\"no\" framespacing=\"0\" allowfullscreen=\"true\"></iframe>",
                 "cover": "data/covers/1.jpg",
                 "date": "20250925"
@@ -125,14 +125,11 @@ function generateDigestCards(videoData) {
         const escapedCover = video.cover.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
         const escapedTitle = video.title.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
         
-        // 确保图片使用完整的URL路径
+        // 使用相对路径处理图片URL
         let imageUrl = video.cover;
-        if (!imageUrl.startsWith('http') && !imageUrl.startsWith('//')) {
-            imageUrl = `http://localhost:8000/${imageUrl}`;
-        }
         
-        // 临时使用在线placeholder图片进行测试
-        imageUrl = 'https://via.placeholder.com/400x250/8B5CF6/ffffff?text=Video+Thumbnail';
+        // 使用本地图片，如果加载失败则使用placeholder
+        // imageUrl = 'https://via.placeholder.com/400x250/8B5CF6/ffffff?text=Video+Thumbnail';
         
         const cardHTML = `
             <article class="digest-card" data-video="${video.link.replace(/"/g, "&quot;")}">
