@@ -362,6 +362,17 @@ body {
     font-size: 3rem;
     color: #8B5CF6;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+}
+
+.feature-icon-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(53%) sepia(97%) saturate(4715%) hue-rotate(244deg) brightness(95%) contrast(97%);
 }
 
 .feature-item h3 {
